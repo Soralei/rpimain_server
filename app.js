@@ -5,11 +5,11 @@ const fs = require('fs');
 const dotenv = require('dotenv').config();
 //const mariadb = require('mariadb/callback');
 const db = require("./db_manager.js");
+const auth = require("./auth.js");
 
 const credentials = {
 	key: fs.readFileSync('/etc/letsencrypt/live/soralei.com/privkey.pem'),
 	cert: fs.readFileSync('/etc/letsencrypt/live/soralei.com/fullchain.pem')
-	//cert: fs.readFileSync('/etc/letsencrypt/live/soralei.com/cert.pem')
 };
 
 const httpPort = 80;
@@ -31,4 +31,17 @@ app.get('/', (req, res) => {
 	}
 
 	res.json({success: true, isSecure: req.secure, isDbConnected: dbcon.isValid(), msg: "Hello from SKOLLIE's Raspberry Pi! My domain is registered as soralei.com, is making use of dynamic dns, and has a valid SSL certificate which auto renews. It also has MariaDB set up."});
+});
+
+app.get("/register", (req, res) => {
+	if(!req.secure){
+		return res.redirect("https://" + req.headers.host + req.url);
+	}
+
+	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
+		auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com");
+		return res.json({success: true, msg: "Attempting to add test database user."});
+	}
+
+	res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 });

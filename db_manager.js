@@ -10,9 +10,15 @@ const dbcon = mariadb.createConnection({
 
 dbcon.connect(err => {
    if(err){
-       console.log(`Failed to connect to the databse. ${err}`);
+       console.log(`DATABASE: Failed to connect to the databse. ${err}`);
    } else {
-       console.log(`Connection to the database established.`);
+       console.log(`DATABASE: Connection to the database established.`);
+       dbcon.query(`USE users`, (req, res) => {
+           if(err){
+               console.log(`DATABASE: Something went wrong when trying to switch to the users database.`);
+           }
+           console.log(`DATABASE: Switched to the users database.`);
+       });
    }
 });
 
