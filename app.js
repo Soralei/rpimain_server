@@ -42,8 +42,11 @@ app.get("/register", (req, res) => {
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
 		auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com", (result) => {
 			if(result && result.success){
+				console.log("result and result is success");
 				return res.json({success: true});
 			} else {
+				console.log("no result, or result is not success");
+				console.log(result);
 				return res.json({success: false});
 			}
 		});
