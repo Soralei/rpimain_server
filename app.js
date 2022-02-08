@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 		return res.json({success: true, isSecure: req.secure, msg: "This is the dev branch."});
 	}
 
-	res.json({success: true, isSecure: req.secure, isDbConnected: dbcon.isValid(), msg: "Hello from SKOLLIE's Raspberry Pi! My domain is registered as soralei.com, is making use of dynamic dns, and has a valid SSL certificate which auto renews. It also has MariaDB set up."});
+	res.json({success: true, isSecure: req.secure, isDbConnected: db.dbcon.isValid(), msg: "Hello from SKOLLIE's Raspberry Pi! My domain is registered as soralei.com, is making use of dynamic dns, and has a valid SSL certificate which auto renews. It also has MariaDB set up."});
 });
 
 app.get("/register", (req, res) => {
