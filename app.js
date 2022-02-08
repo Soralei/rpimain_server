@@ -45,9 +45,7 @@ app.get("/register", (req, res) => {
 				console.log("result and result is success");
 				return res.json({success: true});
 			} else {
-				console.log("no result, or result is not success");
-				console.log(result);
-				return res.json({success: false});
+				return res.json({success: false, err: result.error});
 			}
 		});
 	} else {
