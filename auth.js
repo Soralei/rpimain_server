@@ -11,7 +11,7 @@ function ValidateUsername(username){
     }
 
     // Allow only 3 underscores in total.
-    if((_regex.match(/_/g) || []).length > 3){
+    if((username.match(/_/g) || []).length > 3){
         return false;
     }
 
