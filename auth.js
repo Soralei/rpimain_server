@@ -65,11 +65,7 @@ function UserExists(username){
             return true; // Database error.
         }
 
-        console.log(`UserExists - res: ${res}, res.length: ${res.length}`);
-
         if(res.length > 0){
-            console.log(`res: ${res}`);
-            console.log(`res.length: ${res.length}`);
             return true; // User already exists.
         }
     });
@@ -90,7 +86,9 @@ function RegisterUser(username, password, email){
         return {error: `Failed to register user. Email failed to validate.`};
     }
 
-    if(UserExists(username)){
+    const userExists = UserExists(username);
+    console.log(`userExists: ${userExists}`);
+    if(userExists){
         return {error: `Failed to register user. The user already exists in the database.`};
     }
 
