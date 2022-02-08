@@ -68,9 +68,9 @@ function UserExists(username){
             if(res.length > 0){
                 resolve(true); // User already exists.
             }
+
+            resolve(false); // No user exists.
         });
-    
-        resolve(false); // No user exists.
     });
 }
 
