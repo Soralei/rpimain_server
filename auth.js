@@ -104,15 +104,11 @@ function RegisterUser(username, password, email){
             return {error: err};
         }
 
-        console.log(`res: ${res}`);
-
         if(!res){
             return {error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`};
+        } else {
+            console.log(`res: ${res}`);
         }
-    });
-
-    db.dbcon.query(`SELECT * FROM user`, (err, res) => {
-        console.log(`res: ${res}, err: ${err}`);
     });
 
     console.log("It should query, but does it?");
