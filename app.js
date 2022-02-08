@@ -47,7 +47,7 @@ app.get("/register", (req, res) => {
 				return res.json({success: false});
 			}
 		});
+	} else {
+		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 	}
-
-	res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 });
