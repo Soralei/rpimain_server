@@ -87,10 +87,7 @@ async function RegisterUser(username, password, email, callback){
         return callback({error: `Failed to register user. Email failed to validate.`});
     }
 
-    const userExists = await UserExists(username);
-    console.log(`userExists:`);
-    console.log(userExists);
-    if(userExists){
+    if(await UserExists(username)){
         return callback({error: `Failed to register user. Username is already registered.`});
     }
 
