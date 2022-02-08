@@ -84,7 +84,7 @@ function RegisterUser(username, password, email, callback){
         return callback({error: `Failed to register user. Email failed to validate.`});
     }
 
-    const userExists = UserExists(username);
+    const userExists = UserExists(username).then(something => console.log(something));
     console.log(`userExists:`);
     console.log(userExists);
     if(userExists){
