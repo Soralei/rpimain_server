@@ -40,13 +40,13 @@ app.get("/register", (req, res) => {
 	}
 
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
-		const result = auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com");
-		
-		if(result && result.success){
-			return res.json({success: true});
-		} else {
-			return res.json({success: false});
-		}
+		auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com", (result) => {
+			if(result && result.success){
+				return res.json({success: true});
+			} else {
+				return res.json({success: false});
+			}
+		});
 	}
 
 	res.json({success: false, msg: "This request can only be accessed via the dev branch."});
