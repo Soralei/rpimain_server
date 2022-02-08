@@ -56,19 +56,22 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
-async function UserExists(username){
-    const queryString = `SELECT userid FROM user WHERE username='${username}'`;
-    await db.dbcon.query(queryString, (err, res) => {
-        if(err){
-            console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
-            return true; // Database error.
-        }
-
-        if(res.length > 0){
-            return true; // User already exists.
-        }
+function UserExists(username){
+    return new Promise((resolve, reject) => {
+        const queryString = `SELECT userid FROM user WHERE username='${username}'`;
+        await db.dbcon.query(queryString, (err, res) => {
+            if(err){
+                console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
+                reject();
+            }
+    
+            if(res.length > 0){
+                resolve(true); // User already exists.
+            }
+        });
+    
+        resolve(true); // No user exists.
     });
-    return false; // No user exists.
 }
 
 function RegisterUser(username, password, email, callback){
@@ -84,7 +87,7 @@ function RegisterUser(username, password, email, callback){
         return callback({error: `Failed to register user. Email failed to validate.`});
     }
 
-    const userExists = UserExists(username).then(something => console.log(something));
+    const userExists = Promise.all(UserExists(username));
     console.log(`userExists:`);
     console.log(userExists);
     if(userExists){
