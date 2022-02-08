@@ -59,7 +59,7 @@ function ScramblePassword(password, options={}){
 function UserExist(username){
     const queryString = `SELECT userid FROM user WHERE username=${username}`;
 
-    db.dbcon.query(queryString, (req, res) => {
+    db.dbcon.query(queryString, (err, res) => {
         if(err){
             console.log(`DATABASE: An error occurred when querying the database for the username: ${username}.`);
             return false; // Database error.
@@ -98,7 +98,7 @@ function RegisterUser(username, password, email){
     const scrambled_password = ScramblePassword(password, {base_secret: process.env.PW_SECRET, salt_secret: salt_random_secret, salt_rounds: salt_random_rounds});
 
     const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES('${username}', '${scrambled_password}', '${email}', '${salt_random_secret}', '${salt_random_rounds}', '${date_utc}')`;
-    db.dbcon.query(queryString, (req, res) => {
+    db.dbcon.query(queryString, (err, res) => {
         if(err){
             return {error: err};
         }
