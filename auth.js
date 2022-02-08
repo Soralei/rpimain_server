@@ -65,6 +65,8 @@ function UserExists(username){
             return true; // Database error.
         }
 
+        console.log(`UserExists - res: ${res}, res.length: ${res.length}`);
+
         if(res.length > 0){
             console.log(`res: ${res}`);
             console.log(`res.length: ${res.length}`);
@@ -113,8 +115,6 @@ function RegisterUser(username, password, email){
             console.log(`res: ${res}`);
         }
     });
-
-    console.log("It should query, but does it?");
 
     return {success: true};
 }
