@@ -56,10 +56,10 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
-function UserExists(username){
+async function UserExists(username){
     const queryString = `SELECT userid FROM user WHERE username='${username}'`;
 
-    db.dbcon.query(queryString, (err, res) => {
+    await db.dbcon.query(queryString, (err, res) => {
         if(err){
             console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
             return true; // Database error.
@@ -86,9 +86,7 @@ function RegisterUser(username, password, email){
         return {error: `Failed to register user. Email failed to validate.`};
     }
 
-    const userExists = UserExists(username);
-    console.log(`userExists: ${userExists}`);
-    if(userExists){
+    if(UserExists(username)){
         return {error: `Failed to register user. The user already exists in the database.`};
     }
 
@@ -109,8 +107,6 @@ function RegisterUser(username, password, email){
 
         if(!res){
             return {error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`};
-        } else {
-            console.log(`res: ${res}`);
         }
     });
 
