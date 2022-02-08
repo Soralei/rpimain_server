@@ -59,7 +59,7 @@ function ScramblePassword(password, options={}){
 function UserExists(username){
     return new Promise((resolve, reject) => {
         const queryString = `SELECT userid FROM user WHERE username='${username}'`;
-        await db.dbcon.query(queryString, (err, res) => {
+        db.dbcon.query(queryString, (err, res) => {
             if(err){
                 console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
                 reject();
