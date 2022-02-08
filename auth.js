@@ -66,6 +66,8 @@ function UserExist(username){
         }
 
         if(res.length > 0){
+            console.log(`res: ${res}`);
+            console.log(`res.length: ${res.length}`);
             return false; // User already exists.
         }
     });
