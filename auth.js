@@ -56,23 +56,23 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
-function UserExist(username){
+function UserExists(username){
     const queryString = `SELECT userid FROM user WHERE username='${username}'`;
 
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
-            return false; // Database error.
+            return true; // Database error.
         }
 
         if(res.length > 0){
             console.log(`res: ${res}`);
             console.log(`res.length: ${res.length}`);
-            return false; // User already exists.
+            return true; // User already exists.
         }
     });
 
-    return true; // No user exists.
+    return false; // No user exists.
 }
 
 function RegisterUser(username, password, email){
@@ -88,7 +88,7 @@ function RegisterUser(username, password, email){
         return {error: `Failed to register user. Email failed to validate.`};
     }
 
-    if(UserExist(username)){
+    if(UserExists(username)){
         return {error: `Failed to register user. The user already exists in the database.`};
     }
 
