@@ -111,7 +111,7 @@ function RegisterUser(username, password, email){
         }
     });
 
-    db.dbcon.query(`FIND * FROM user`, (err, res) => {
+    db.dbcon.query(`SELECT * FROM user`, (err, res) => {
         console.log(`res: ${res}, err: ${err}`);
     });
 
