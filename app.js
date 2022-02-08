@@ -6,6 +6,7 @@ const dotenv = require('dotenv').config();
 //const mariadb = require('mariadb/callback');
 const db = require("./db_manager.js");
 const auth = require("./auth.js");
+const { json } = require('express');
 
 const credentials = {
 	key: fs.readFileSync('/etc/letsencrypt/live/soralei.com/privkey.pem'),
@@ -39,8 +40,13 @@ app.get("/register", (req, res) => {
 	}
 
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
-		auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com");
-		return res.json({success: true, msg: "Attempting to add test database user."});
+		const result = auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com");
+		
+		if(result.success){
+			return res.json({success: true});
+		} else {
+			return res.json({success: false, error: result.error});
+		}
 	}
 
 	res.json({success: false, msg: "This request can only be accessed via the dev branch."});
