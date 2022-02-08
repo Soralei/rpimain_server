@@ -103,12 +103,14 @@ function RegisterUser(username, password, email){
             return {error: err};
         }
 
-        console.log(res);
+        console.log(`res: ${res}`);
 
         if(!res){
             return {error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`};
         }
     });
+
+    console.log("It should query, but does it?");
 
     return {success: true};
 }
