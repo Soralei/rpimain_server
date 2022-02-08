@@ -56,39 +56,41 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
-function UserExists(username){
+function UserExists(username, callback){
     const queryString = `SELECT userid FROM user WHERE username='${username}'`;
 
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
-            return true; // Database error.
+            return callback(true); // Database error.
         }
 
         if(res.length > 0){
-            return true; // User already exists.
+            return callback(true); // User already exists.
         }
 
-        return false; // No user exists.
+        return callback(false); // No user exists.
     });
 }
 
-function RegisterUser(username, password, email){
+function RegisterUser(username, password, email, callback){
     if(!ValidateUsername(username)){
-        return {error: `Failed to register user. Username failed to validate.`};
+        return callback({error: `Failed to register user. Username failed to validate.`});
     }
 
     if(!ValidatePassword(password)){
-        return {error: `Failed to register user. Password failed to validate.`};
+        return callback({error: `Failed to register user. Password failed to validate.`});
     }
 
     if(!ValidateEmail(email)){
-        return {error: `Failed to register user. Email failed to validate.`};
+        return callback({error: `Failed to register user. Email failed to validate.`});
     }
 
-    if(UserExists(username)){
-        return {error: `Failed to register user. The user already exists in the database.`};
-    }
+    UserExists(username, (exists) => {
+        if(exists){
+            return callback({error: `Failed to register user. The user already exists in the database.`});
+        }
+    });
 
     const date_utc = new Date().toUTCString();
     const salt_random_secret = crypto.randomBytes(20).toString("hex");
@@ -101,14 +103,14 @@ function RegisterUser(username, password, email){
     const queryValues = [username];
     db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
-            return {error: err};
+            return callback({error: err});
         }
 
         if(!res){
-            return {error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`};
+            return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
-        return {success: true};
+        return callback({success: true});
     });
 }
 
