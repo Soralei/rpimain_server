@@ -57,7 +57,7 @@ function ScramblePassword(password, options={}){
 }
 
 function UserExist(username){
-    const queryString = `SELECT userid FROM user WHERE username=${username}`;
+    const queryString = `SELECT userid FROM user WHERE username='${username}'`;
 
     db.dbcon.query(queryString, (err, res) => {
         if(err){
