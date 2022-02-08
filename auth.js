@@ -74,7 +74,7 @@ function UserExists(username){
     });
 }
 
-function RegisterUser(username, password, email, callback){
+async function RegisterUser(username, password, email, callback){
     if(!ValidateUsername(username)){
         return callback({error: `Failed to register user. Username failed to validate.`});
     }
@@ -87,19 +87,12 @@ function RegisterUser(username, password, email, callback){
         return callback({error: `Failed to register user. Email failed to validate.`});
     }
 
-    const userExists = Promise.all([UserExists(username)]);
+    const userExists = await UserExists(username);
     console.log(`userExists:`);
     console.log(userExists);
     if(userExists){
         return callback({error: `Failed to register user. Username is already registered.`});
     }
-
-    UserExists(username, (exists) => {
-        if(exists){
-            console.log("user exists already");
-            return callback({error: `Failed to register user. The user already exists in the database.`});
-        }
-    });
 
     const date_utc = new Date().toUTCString();
     const salt_random_secret = crypto.randomBytes(20).toString("hex");
