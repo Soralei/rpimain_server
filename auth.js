@@ -99,7 +99,7 @@ function RegisterUser(username, password, email){
     //const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds, date_utc];
     const queryString = `INSERT INTO user(username) VALUES(?)`;
     const queryValues = [username];
-    await db.dbcon.query(queryString, queryValues, (err, res) => {
+    db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
             return {error: err};
         }
