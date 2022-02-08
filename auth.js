@@ -61,7 +61,7 @@ function UserExist(username){
 
     db.dbcon.query(queryString, (err, res) => {
         if(err){
-            console.log(`DATABASE: An error occurred when querying the database for the username: ${username}.`);
+            console.log(`DATABASE: An error occurred when querying the database for the username: ${username}. ${err}`);
             return false; // Database error.
         }
 
