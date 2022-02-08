@@ -73,7 +73,7 @@ async function UserExists(username){
     return false; // No user exists.
 }
 
-function RegisterUser(username, password, email){
+async function RegisterUser(username, password, email){
     if(!ValidateUsername(username)){
         return {error: `Failed to register user. Username failed to validate.`};
     }
@@ -99,8 +99,7 @@ function RegisterUser(username, password, email){
     //const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds, date_utc];
     const queryString = `INSERT INTO user(username) VALUES(?)`;
     const queryValues = [username];
-    console.log(username);
-    db.dbcon.query(queryString, queryValues, (err, res) => {
+    await db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
             return {error: err};
         }
