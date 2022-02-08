@@ -88,6 +88,7 @@ function RegisterUser(username, password, email, callback){
 
     UserExists(username, (exists) => {
         if(exists){
+            console.log("user exists already");
             return callback({error: `Failed to register user. The user already exists in the database.`});
         }
     });
@@ -103,13 +104,16 @@ function RegisterUser(username, password, email, callback){
     const queryValues = [username];
     db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
+            console.log("just some error");
             return callback({error: err});
         }
 
         if(!res){
+            console.log("failed to insert for some reason");
             return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
+        console.log("Success");
         return callback({success: true});
     });
 }
