@@ -111,6 +111,10 @@ function RegisterUser(username, password, email){
         }
     });
 
+    db.dbcon.query(`FIND * FROM user`, (err, res) => {
+        console.log(`res: ${res}, err: ${err}`);
+    });
+
     console.log("It should query, but does it?");
 
     return {success: true};
