@@ -95,23 +95,18 @@ async function RegisterUser(username, password, email, callback){
     const salt_random_secret = crypto.randomBytes(20).toString("hex");
     const salt_random_rounds = Math.floor(Math.random() * 11 + 1);
     const scrambled_password = ScramblePassword(password, {base_secret: process.env.PW_SECRET, salt_secret: salt_random_secret, salt_rounds: salt_random_rounds});
-
-    //const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES(?, ?, ?, ?, ?, ?)`;
-    //const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds, date_utc];
-    const queryString = `INSERT INTO user(username) VALUES(?)`;
-    const queryValues = [username];
+    
+    const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES(?, ?, ?, ?, ?, ?)`;
+    const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds, date_utc];
     db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
-            console.log("just some error");
             return callback({error: err});
         }
 
         if(!res){
-            console.log("failed to insert for some reason");
             return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
-        console.log("Success");
         return callback({success: true});
     });
 }
