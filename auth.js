@@ -62,7 +62,7 @@ function CreateRegisterToken(username){
 }
 
 function VerifyAccount(token){
-    const queryString = `SELECT userid FROM user WHERE token=${token} AND creation_date < DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
+    const queryString = `SELECT owner_id FROM register_token WHERE token=${token} AND creation_date < DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
     db.dbcon.query(queryString, (err, res) => {
         console.log(res);
         if(res && res.length > 0){
