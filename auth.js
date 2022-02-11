@@ -118,9 +118,25 @@ function UserExists(username){
     });
 }
 
+function VerifyPassword(password, salt_secret, salt_rounds, callback){
+
+}
+
 // WIP. Will be used to "log in" the user and manage their session.
-function AuthenticateUser(){
-    return false;
+function Authenticate(username, password, callback){
+    const queryString = `SELECT * FROM user WHERE username='${username}'`;
+    db.dbcon.query(queryString, (err, res) => {
+        if(err){
+            return callback({error: err});
+        }
+
+        if(res && res.length > 0){
+            console.log(res);
+            //VerifyPassword();
+        } else {
+            return callback({error: `Username of password is invalid.`});
+        }
+    });
 }
 
 // Handles the user registration process.
@@ -170,5 +186,6 @@ async function RegisterUser(username, password, email, callback){
 
 module.exports = {
     RegisterUser: RegisterUser,
-    VerifyAccount: VerifyAccount
+    VerifyAccount: VerifyAccount,
+    Authenticate: Authenticate
 }

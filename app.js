@@ -64,3 +64,16 @@ app.get("/verify_account", (req, res) => {
 		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 	}
 });
+
+app.get("/authenticate", (req, res) => {
+	if(!req.secure){
+		return res.redirect("https://" + req.headers.host + req.url);
+	}
+
+	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
+		// login
+		auth.Authenticate("SKOLLIE", "abrakadabra");
+	} else {
+		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
+	}
+});
