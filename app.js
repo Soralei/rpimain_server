@@ -60,6 +60,7 @@ app.post("/register", (req, res) => {
 	}
 
 	const data = req.body;
+	console.log(req.body);
 	if(!data.username || !data.password || !data.email){
 		res.status(400).json({error: `Invalid parameters.`});
 	}
