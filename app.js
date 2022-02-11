@@ -52,6 +52,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+	console.log(req.secure);
 	if(!req.seucre){
 		res.status(403).json({error: `This request was sent without https.`});
 	}
