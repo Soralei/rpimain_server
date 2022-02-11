@@ -20,6 +20,9 @@ const app = express();
 http.createServer(app).listen(httpPort, () => { console.log(`HTTP server listening on port ${httpPort}`); });
 https.createServer(credentials, app).listen(httpsPort, () => { console.log(`HTTP server listening on port ${httpsPort}`) });
 
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+
 app.get('/', (req, res) => {
 
 	if(!req.secure){
