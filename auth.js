@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { dbcon } = require('./db_manager.js');
 const db = require("./db_manager.js");
 
 function ValidateUsername(username){
@@ -149,6 +150,25 @@ function Authenticate(username, password, callback){
     });
 }
 
+// Can be used to delete one's account (just for debugging).
+function DeleteAccount(username, password, callback){
+    Authenticate(username, password, (result) => {
+        if(result && result.success){
+            const queryString = `DELETE FROM user WHERE username='${username}'`;
+            db.dbcon.query(queryString, (err, res) => {
+                if(err){
+                    return callback({error: err});
+                }
+
+                if(res && res.affectedRows && res.affectedRows > 0){
+                    return callback({success: true});
+                }
+                return callback({error: `Failed to delete user.`});
+            });
+        }
+    });
+}
+
 // Handles the user registration process.
 async function RegisterUser(username, password, email, callback){
     if(!ValidateUsername(username)){
@@ -197,5 +217,6 @@ async function RegisterUser(username, password, email, callback){
 module.exports = {
     RegisterUser: RegisterUser,
     VerifyAccount: VerifyAccount,
-    Authenticate: Authenticate
+    Authenticate: Authenticate,
+    DeleteAccount: DeleteAccount
 }

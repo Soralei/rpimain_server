@@ -22,7 +22,6 @@ https.createServer(credentials, app).listen(httpsPort, () => { console.log(`HTTP
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-//app.use(express.static(__dirname + '/public'));
 
 app.get('/help', (req, res) => {
 	res.sendFile(__dirname + '/public/help.html');
@@ -85,7 +84,26 @@ app.post('/authenticate', (req, res) => {
 	}
 
 	auth.Authenticate(data.username, data.password, (result) => {
-		if(result){
+		if(result && result.success){
+			res.status(200).json(result);
+		}
+		res.status(401).json(result);
+	});
+});
+
+app.delete('/unregister', (req, res) => {
+	if(!req.secure){
+		return res.status(403).json({error: `Warning! The request was sent via HTTP, use the HTTPS when using this endpoint.`});
+	}
+
+	const data = req.body;
+
+	if(!data.username || !data.password){
+		res.status(400).json({error: `Invalid parameters.`});
+	}
+
+	auth.DeleteAccount(data.username, data.password, (result) => {
+		if(result && result.success){
 			res.status(200).json(result);
 		}
 		res.status(401).json(result);
