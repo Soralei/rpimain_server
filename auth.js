@@ -118,6 +118,7 @@ function UserExists(username){
     });
 }
 
+// Checks to see if a password input matches what is stored for the user in the database.
 function VerifyPassword(input_password, db_password, salt_secret, salt_rounds, callback){
     const scrambled_input = ScramblePassword(input_password, {base_secret: process.env.PW_SECRET, salt_secret: salt_secret, salt_rounds: salt_rounds});
     if(scrambled_input == db_password){
@@ -140,10 +141,10 @@ function Authenticate(username, password, callback){
                 if(result){
                     return callback({success: true});
                 }
-                return callback({error: `Password mismatch.`});
+                return callback({error: `Username or password is invalid.`});
             });
         } else {
-            return callback({error: `Username of password is invalid.`});
+            return callback({error: `Username or password is invalid.`});
         }
     });
 }
