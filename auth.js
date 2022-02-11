@@ -66,7 +66,7 @@ function CreateRegisterToken(username){
 
 // Handles the account verification process, which activates the account.
 function VerifyAccount(username, token, callback){
-    const queryString = `SELECT owner_id FROM WHERE username='${username}' AND token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
+    const queryString = `SELECT owner_id FROM register_token WHERE username='${username}' AND token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             return callback({error: err});
@@ -211,7 +211,7 @@ async function RegisterUser(username, password, email, callback){
             if(err){
                 return callback({error: `DATABASE: Account was created, but failed to create a register_token. ${err}`});
             }
-            return callback({success: true, verify_url: `https://soralei.com/verify?token=${token}`}); // Temporary. verify_url should be emailed to the user instead.
+            return callback({success: true, verify_url: `https://soralei.com/verify?username=${username}&token=${token}`}); // Temporary. verify_url should be emailed to the user instead.
         });
     });
 }
