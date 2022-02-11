@@ -118,8 +118,12 @@ function UserExists(username){
     });
 }
 
-function VerifyPassword(password, salt_secret, salt_rounds, callback){
-
+function VerifyPassword(input_password, db_password, salt_secret, salt_rounds, callback){
+    const scrambled_input = ScramblePassword(input_password, {base_secret: process.env.PW_SECRET, salt_secret: salt_secret, salt_rounds: salt_rounds});
+    if(scrambled_input == db_password){
+        return callback(true);
+    }
+    return callback(false);
 }
 
 // WIP. Will be used to "log in" the user and manage their session.
@@ -131,8 +135,13 @@ function Authenticate(username, password, callback){
         }
 
         if(res && res.length > 0){
-            console.log(res[0].userid);
-            //VerifyPassword();
+            const data = res[0];
+            VerifyPassword(password, data.password, data.salt_random_secret, data.salt_random_rounds, (result) => {
+                if(result){
+                    return callback({success: true});
+                }
+                return callback({error: `Password mismatch.`});
+            });
         } else {
             return callback({error: `Username of password is invalid.`});
         }
