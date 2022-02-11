@@ -56,7 +56,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
 	if(!req.secure){
-		res.status(403).json({error: `This request was sent without https.`});
+		return res.redirect("https://" + req.headers.host + req.url);
 	}
 
 	const data = req.body;
@@ -69,7 +69,7 @@ app.post("/register", (req, res) => {
 		if(result && result.success){
 			res.status(200).json(result);
 		}
-		res.status(406).json({error: result});
+		res.status(406).json(result);
 	});
 });
 
