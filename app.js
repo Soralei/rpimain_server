@@ -72,8 +72,8 @@ app.get("/authenticate", (req, res) => {
 
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
 		// login
-		auth.Authenticate("SKOLLIE", "abrakadabra", (res) => {
-			res.json(res);
+		auth.Authenticate("SKOLLIE", "abrakadabra", (result) => {
+			res.json(result);
 		});
 	} else {
 		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
