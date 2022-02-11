@@ -59,6 +59,7 @@ app.post("/register", (req, res) => {
 	});
 });
 
+// WIP NOTE: This should require the username to be used as a parameter as well.
 app.get("/verify", (req, res) => {
 	if(!req.secure){
 		return res.redirect("https://" + req.headers.host + req.url);

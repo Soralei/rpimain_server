@@ -130,7 +130,7 @@ function VerifyPassword(input_password, db_password, salt_secret, salt_rounds, c
 
 // WIP. Will also be used to manage the user browser session.
 function Authenticate(username, password, callback){
-    const queryString = `SELECT * FROM user WHERE username='${username}'`;
+    const queryString = `SELECT * FROM user WHERE username='${username}' AND NOT register_date='N/A'`; // Can only authenticate with verified accounts, hence NOT register_date='N/A';
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             return callback({error: err});
