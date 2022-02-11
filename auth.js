@@ -95,7 +95,7 @@ function ActivateAccount(owner_id, callback){
         if(res && res.affectedRows > 0){
             return callback({success: true});
         } else {
-            return callback({error: "User is already verified."});
+            return callback({error: "User doesn't exist or is already verified."});
         }
     });
 }
