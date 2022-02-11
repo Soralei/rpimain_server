@@ -58,7 +58,9 @@ app.get("/verify_account", (req, res) => {
 	}
 
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
-		auth.VerifyAccount(req.query.token);
+		auth.VerifyAccount(req.query.token, (result) => {
+			res.json(result);
+		});
 	} else {
 		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 	}

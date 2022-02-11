@@ -61,20 +61,36 @@ function CreateRegisterToken(username){
     return crypto.createHmac("sha256", username).update(raw_token).digest("hex");
 }
 
-function VerifyAccount(token){
+function VerifyAccount(token, callback){
     const queryString = `SELECT owner_id FROM register_token WHERE token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
-    console.log(`token: ${token}`);
     db.dbcon.query(queryString, (err, res) => {
-        console.log(res);
+        if(err){
+            return callback({error: err});
+        }
+
         if(res && res.length > 0){
-            ActivateAccount(res[0]);
+            ActivateAccount(res[0].owner_id, (result) => {
+                return callback(result);
+            });
+        } else {
+            return callback({error: "The verification link is invalid or expired."});
         }
     });
 }
 
-function ActivateAccount(userid){
-    // Set register date etc.
-    console.log(`Should activate userid: ${userid}.`);
+function ActivateAccount(owner_id, callback){
+    const queryString = `UPDATE user SET register_date=NOW() WHERE userid=${owner_id} AND register_date='N/A'`;
+    db.dbcon.query(queryString, (err, res) => {
+        if(err){
+            return callback({error: err});
+        }
+
+        if(res && res.length > 0){
+            return callback({success: true});
+        } else {
+            return callback({error: "User is already registered."});
+        }
+    });
 }
 
 function UserExists(username){
