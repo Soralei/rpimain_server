@@ -131,7 +131,7 @@ function Authenticate(username, password, callback){
         }
 
         if(res && res.length > 0){
-            console.log(res.userid);
+            console.log(res[0].userid);
             //VerifyPassword();
         } else {
             return callback({error: `Username of password is invalid.`});
