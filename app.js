@@ -22,7 +22,11 @@ https.createServer(credentials, app).listen(httpsPort, () => { console.log(`HTTP
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
+
+app.get('/help', (req, res) => {
+	res.sendFile(__dirname + '/public/help.html');
+});
 
 app.get('/', (req, res) => {
 
