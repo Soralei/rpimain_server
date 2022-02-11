@@ -163,8 +163,10 @@ function DeleteAccount(username, password, callback){
                 console.log(res);
 
                 if(res && res.affectedRows && res.affectedRows > 0){
+                    console.log("wtf?");
                     return callback({success: true});
                 } else {
+                    console.log("WTF 2?");
                     return callback({error: `Failed to delete user.`});
                 }
             });
