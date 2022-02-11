@@ -160,6 +160,8 @@ function DeleteAccount(username, password, callback){
                     return callback({error: err});
                 }
 
+                console.log(res);
+
                 if(res && res.affectedRows && res.affectedRows > 0){
                     return callback({success: true});
                 }
