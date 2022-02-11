@@ -56,6 +56,25 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
+function CreateRegisterToken(username){
+    const raw_token = crypto.randomBytes(20).toString("hex");
+    return crypto.createHmac("sha256", username).update(raw_token).digest("hex");
+}
+
+function VerifyAccount(token){
+    const queryString = `SELECT userid FROM user WHERE token=${token} AND creation_date < DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
+    db.dbcon.query(queryString, (err, res) => {
+        if(res.length > 0){
+            ActivateAccount(res[0]);
+        }
+    });
+}
+
+function ActivateAccount(userid){
+    // Set register date etc.
+    console.log(`Should activate userid: ${userid}.`);
+}
+
 function UserExists(username){
     return new Promise((resolve, reject) => {
         const queryString = `SELECT userid FROM user WHERE username='${username}'`;
@@ -95,7 +114,7 @@ async function RegisterUser(username, password, email, callback){
     const salt_random_rounds = Math.floor(Math.random() * 11 + 1);
     const scrambled_password = ScramblePassword(password, {base_secret: process.env.PW_SECRET, salt_secret: salt_random_secret, salt_rounds: salt_random_rounds});
     
-    const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES(?, ?, ?, ?, ?, NOW())`;
+    const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES(?, ?, ?, ?, ?, 'N/A')`;
     const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds];
     db.dbcon.query(queryString, queryValues, (err, res) => {
         if(err){
@@ -106,10 +125,17 @@ async function RegisterUser(username, password, email, callback){
             return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
-        return callback({success: true});
+        const token = CreateRegisterToken(username);
+        db.dbcon.query(`INSERT INTO register_token(owner_id, token, creation_date) VALUES(${res.userid}, '${token}', NOW())`, (err, res) => {
+            if(err){
+                return callback({error: `DATABASE: Failed to create register_token. ${err}`});
+            }
+            return callback({success: true, token: token});
+        });
     });
 }
 
 module.exports = {
-    RegisterUser: RegisterUser
+    RegisterUser: RegisterUser,
+    VerifyAccount: VerifyAccount
 }

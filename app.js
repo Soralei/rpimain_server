@@ -42,11 +42,23 @@ app.get("/register", (req, res) => {
 	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
 		auth.RegisterUser("SKOLLIE", "abrakadabra", "soralei@gmail.com", (result) => {
 			if(result && result.success){
-				return res.json({success: true});
+				return res.json(result);
 			} else {
 				return res.json({success: false, err: result.error});
 			}
 		});
+	} else {
+		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
+	}
+});
+
+app.get("/verify_account", (req, res) => {
+	if(!req.secure){
+		return res.redirect("https://" + req.headers.host + req.url);
+	}
+
+	if(req.subdomains[0] != null && req.subdomains[0] == "dev"){
+		db.VerifyAccount(req.query.token);
 	} else {
 		res.json({success: false, msg: "This request can only be accessed via the dev branch."});
 	}
