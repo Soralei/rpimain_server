@@ -64,7 +64,8 @@ function CreateRegisterToken(username){
 function VerifyAccount(token){
     const queryString = `SELECT userid FROM user WHERE token=${token} AND creation_date < DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
     db.dbcon.query(queryString, (err, res) => {
-        if(res.length > 0){
+        console.log(res);
+        if(res && res.length > 0){
             ActivateAccount(res[0]);
         }
     });
