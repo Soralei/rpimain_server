@@ -65,7 +65,11 @@ app.get("/verify", (req, res) => {
 		return res.redirect("https://" + req.headers.host + req.url);
 	}
 
-	auth.VerifyAccount(req.query.token, (result) => {
+	if(!req.query.username || !req.query.token){
+		res.status(400).json({error: `Invalid parameters.`});
+	}
+
+	auth.VerifyAccount(req.query.username, req.query.token, (result) => {
 		if(result){
 			res.status(200).json(result);
 		}

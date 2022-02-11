@@ -65,8 +65,8 @@ function CreateRegisterToken(username){
 }
 
 // Handles the account verification process, which activates the account.
-function VerifyAccount(token, callback){
-    const queryString = `SELECT owner_id FROM register_token WHERE token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
+function VerifyAccount(username, token, callback){
+    const queryString = `SELECT owner_id FROM WHERE username='${username}' AND token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             return callback({error: err});
