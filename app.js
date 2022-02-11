@@ -42,7 +42,7 @@ app.post("/register", (req, res) => {
 	}
 
 	const data = req.body;
-	console.log(req.body);
+
 	if(!data.username || !data.password || !data.email){
 		res.status(400).json({error: `Invalid parameters.`});
 	}
@@ -73,11 +73,12 @@ app.post('/authenticate', (req, res) => {
 		return res.status(403).json({error: `Warning! The request was sent via HTTP, use the HTTPS when using this endpoint.`});
 	}
 
+	const data = req.body;
+
 	if(!data.username || !data.password){
 		res.status(400).json({error: `Invalid parameters.`});
 	}
 
-	const data = req.body;
 	auth.Authenticate(data.username, data.password, (result) => {
 		if(result){
 			res.status(200).json(result);
