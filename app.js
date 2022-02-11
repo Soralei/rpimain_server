@@ -55,7 +55,7 @@ app.post("/register", (req, res) => {
 	});
 });
 
-app.get("/verify_account", (req, res) => {
+app.get("/verify", (req, res) => {
 	if(!req.secure){
 		return res.redirect("https://" + req.headers.host + req.url);
 	}
