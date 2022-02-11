@@ -140,7 +140,8 @@ function Authenticate(username, password, callback){
 
         if(res && res.length > 0){
             const data = res[0];
-            VerifyPassword(password, data.password, data.salt_random_secret, data.salt_random_rounds, (result) => {
+            console.log(data);
+            VerifyPassword(password, data.password, data.salt_secret, data.salt_rounds, (result) => {
                 if(result){
                     return callback({success: true});
                 }
