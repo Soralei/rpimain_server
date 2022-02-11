@@ -189,7 +189,7 @@ async function RegisterUser(username, password, email, callback){
             if(err){
                 return callback({error: `DATABASE: Account was created, but failed to create a register_token. ${err}`});
             }
-            return callback({success: true, token: token}); // Temporary.
+            return callback({success: true, verify_url: `https://soralei.com/verify?token=${token}`}); // Temporary.
         });
     });
 }
