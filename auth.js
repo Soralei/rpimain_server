@@ -125,6 +125,7 @@ async function RegisterUser(username, password, email, callback){
             return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
+        console.log(res);
         const token = CreateRegisterToken(username);
         db.dbcon.query(`INSERT INTO register_token(owner_id, token, creation_date) VALUES(${res.userid}, '${token}', NOW())`, (err, res) => {
             if(err){
