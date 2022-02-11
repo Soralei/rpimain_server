@@ -119,11 +119,7 @@ function UserExists(username){
 }
 
 function VerifyPassword(input_password, db_password, salt_secret, salt_rounds, callback){
-    console.log(db_password);
-    console.log(`salt_secret ${salt_secret}`);
-    console.log(`salt_rounds ${salt_rounds}`);
     const scrambled_input = ScramblePassword(input_password, {base_secret: process.env.PW_SECRET, salt_secret: salt_secret, salt_rounds: salt_rounds});
-    console.log(scrambled_input);
     if(scrambled_input == db_password){
         return callback(true);
     }
@@ -140,7 +136,6 @@ function Authenticate(username, password, callback){
 
         if(res && res.length > 0){
             const data = res[0];
-            console.log(data);
             VerifyPassword(password, data.password, data.salt_secret, data.salt_rounds, (result) => {
                 if(result){
                     return callback({success: true});
