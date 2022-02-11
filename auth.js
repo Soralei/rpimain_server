@@ -207,7 +207,7 @@ async function RegisterUser(username, password, email, callback){
 
         // Create and send the registration token, which the user can use to verify their email.
         const token = CreateRegisterToken(username);
-        db.dbcon.query(`INSERT INTO register_token(owner_id, token, creation_date, username) VALUES(${res.insertId}, '${token}', NOW(), '${username})'`, (err, res) => {
+        db.dbcon.query(`INSERT INTO register_token(owner_id, token, creation_date, username) VALUES(${res.insertId}, '${token}', NOW(), '${username}')`, (err, res) => {
             if(err){
                 return callback({error: `DATABASE: Account was created, but failed to create a register_token. ${err}`});
             }
