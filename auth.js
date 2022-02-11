@@ -166,6 +166,7 @@ function DeleteAccount(username, password, callback){
                 return callback({error: `Failed to delete user.`});
             });
         }
+        return callback({error: `Failed to delete user. Couldn't find user or authentication failed.`});
     });
 }
 
