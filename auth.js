@@ -43,6 +43,7 @@ function ValidateEmail(email){
     return true;
 }
 
+// Creates a secure password.
 function ScramblePassword(password, options={}){
     const base_secret = options.base_secret;        // This should be a secret known only to the server.
     const salt_secret = options.salt_secret;        // Unique salt secret generated and stored in the database for the user specifically.
@@ -56,11 +57,13 @@ function ScramblePassword(password, options={}){
     return output;
 }
 
+// Generates a unique token for the user which is to be used for email verification in order to activate the account.
 function CreateRegisterToken(username){
     const raw_token = crypto.randomBytes(20).toString("hex");
     return crypto.createHmac("sha256", username).update(raw_token).digest("hex");
 }
 
+// Handles the account verification process, which activates the account.
 function VerifyAccount(token, callback){
     const queryString = `SELECT owner_id FROM register_token WHERE token='${token}' AND creation_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE)`;
     db.dbcon.query(queryString, (err, res) => {
@@ -73,13 +76,16 @@ function VerifyAccount(token, callback){
                 return callback(result);
             });
         } else {
+            // If it found a token, but it's older than 15 minutes, it's expired but has yet to be cleaned up by the database.
+            // This will also run if no matching token was found in the database (i.e. it's deleted, or tampered).
             return callback({error: "The verification link is invalid or expired."});
         }
     });
 }
 
+// Activates an account if it's not already activated.
 function ActivateAccount(owner_id, callback){
-    const queryString = `UPDATE user SET register_date=NOW() WHERE userid=${owner_id} AND register_date='N/A'`;
+    const queryString = `UPDATE user SET register_date=NOW() WHERE userid=${owner_id} AND register_date='N/A'`; // If no register date is set (i.e. N/A), it's not yet verified.
     db.dbcon.query(queryString, (err, res) => {
         if(err){
             return callback({error: err});
@@ -93,6 +99,7 @@ function ActivateAccount(owner_id, callback){
     });
 }
 
+// Checks if a user with the specified username already exists in the database.
 function UserExists(username){
     return new Promise((resolve, reject) => {
         const queryString = `SELECT userid FROM user WHERE username='${username}'`;
@@ -111,6 +118,12 @@ function UserExists(username){
     });
 }
 
+// WIP. Will be used to "log in" the user and manage their session.
+function AuthenticateUser(){
+    return false;
+}
+
+// Handles the user registration process.
 async function RegisterUser(username, password, email, callback){
     if(!ValidateUsername(username)){
         return callback({error: `Failed to register user. Username failed to validate.`});
@@ -132,6 +145,7 @@ async function RegisterUser(username, password, email, callback){
     const salt_random_rounds = Math.floor(Math.random() * 11 + 1);
     const scrambled_password = ScramblePassword(password, {base_secret: process.env.PW_SECRET, salt_secret: salt_random_secret, salt_rounds: salt_random_rounds});
     
+    // The registration date is "N/A" until the account has been verified.
     const queryString = `INSERT INTO user(username, password, email, salt_secret, salt_rounds, register_date) VALUES(?, ?, ?, ?, ?, 'N/A')`;
     const queryValues = [username, scrambled_password, email, salt_random_secret, salt_random_rounds];
     db.dbcon.query(queryString, queryValues, (err, res) => {
@@ -139,16 +153,17 @@ async function RegisterUser(username, password, email, callback){
             return callback({error: err});
         }
 
-        if(!res){
+        if(!res){ // This should never trigger, but just in case...
             return callback({error: `DATABASE: Failed to insert user: ${username} into the database for some reason.`});
         }
 
+        // Create and send the registration token, which the user can use to verify their email.
         const token = CreateRegisterToken(username);
         db.dbcon.query(`INSERT INTO register_token(owner_id, token, creation_date) VALUES(${res.insertId}, '${token}', NOW())`, (err, res) => {
             if(err){
-                return callback({error: `DATABASE: Failed to create register_token. ${err}`});
+                return callback({error: `DATABASE: Account was created, but failed to create a register_token. ${err}`});
             }
-            return callback({success: true, token: token});
+            return callback({success: true, token: token}); // Temporary.
         });
     });
 }

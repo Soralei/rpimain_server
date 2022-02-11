@@ -3,7 +3,6 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const dotenv = require('dotenv').config();
-//const mariadb = require('mariadb/callback');
 const db = require("./db_manager.js");
 const auth = require("./auth.js");
 const { json } = require('express');
