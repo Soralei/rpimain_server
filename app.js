@@ -51,6 +51,24 @@ app.get("/register", (req, res) => {
 	}
 });
 
+app.post("/register", (req, res) => {
+	if(!req.seucre){
+		res.status(403).json({error: `This request was sent without https.`});
+	}
+
+	const data = req.body;
+	if(!data.username || !data.password || !data.email){
+		res.status(400).json({error: `Invalid parameters.`});
+	}
+
+	auth.RegisterUser(data.username, data.password, data.email, (result) => {
+		if(result && result.success){
+			res.status(200).json(result);
+		}
+		res.status(406).json({error: result});
+	});
+});
+
 app.get("/verify_account", (req, res) => {
 	if(!req.secure){
 		return res.redirect("https://" + req.headers.host + req.url);

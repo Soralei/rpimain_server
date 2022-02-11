@@ -127,7 +127,7 @@ function VerifyPassword(input_password, db_password, salt_secret, salt_rounds, c
     return callback(false);
 }
 
-// WIP. Will be used to "log in" the user and manage their session.
+// WIP. Will also be used to manage the user browser session.
 function Authenticate(username, password, callback){
     const queryString = `SELECT * FROM user WHERE username='${username}'`;
     db.dbcon.query(queryString, (err, res) => {
